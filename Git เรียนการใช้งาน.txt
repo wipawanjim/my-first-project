@@ -1,0 +1,511 @@
+Git คืออะไร?
+Git คือระบบควบคุมเวอร์ชัน (Version Control System) ที่ใช้ติดตามการเปลี่ยนแปลงของไฟล์ในโปรเจกต์ โดยเฉพาะโค้ดโปรแกรม ช่วยให้เรา:
+ย้อนกลับ ไปดูหรือกู้คืนเวอร์ชันเก่าของไฟล์ได้
+ทำงานร่วมกับคนอื่น ได้โดยไม่ทับไฟล์กัน
+แตกแขนง (branch) เพื่อทดลองฟีเจอร์ใหม่โดยไม่กระทบโค้ดหลัก
+ดูประวัติ ว่าใครแก้อะไร เมื่อไหร่
+Git ต่างจาก GitHub นะครับ — Git คือตัวโปรแกรม/เทคโนโลยี ส่วน GitHub คือเว็บไซต์ที่ใช้เก็บโปรเจกต์ Git ไว้บนคลาวด์ (ยังมี GitLab, Bitbucket ที่คล้ายกัน)
+
+แนวคิดพื้นฐานที่ต้องเข้าใจ
+Repository (repo) = โฟลเดอร์โปรเจกต์ที่ Git ติดตามอยู่
+Commit = การ "บันทึกภาพนิ่ง" ของไฟล์ ณ จุดหนึ่ง พร้อมข้อความอธิบาย
+Branch = เส้นทางการพัฒนาแยกออกไป (เช่น main คือสายหลัก)
+Staging area = พื้นที่พักไฟล์ที่เราเลือกจะ commit (ใช้คำสั่ง add)
+Remote = repo ที่อยู่บนเซิร์ฟเวอร์ เช่น GitHub
+
+ติดตั้ง Git
+# Windows: ดาวน์โหลดจาก git-scm.com
+# Mac
+brew install git
+# Linux (Ubuntu/Debian)
+sudo apt install git
+
+ตั้งค่าชื่อ/อีเมลครั้งแรก:
+bash
+git config --global user.name "ชื่อของคุณ"
+git config --global user.email "you@example.com"
+
+คำสั่งที่ใช้บ่อยที่สุด
+เริ่มต้นโปรเจกต์
+git init                    # สร้าง repo ใหม่ในโฟลเดอร์ปัจจุบัน
+git clone <url>              # โคลนโปรเจกต์จาก GitHub มาไว้เครื่อง
+วนลูปทำงานประจำวัน
+bash
+git status                   # ดูว่าไฟล์ไหนเปลี่ยนแปลงบ้าง
+git add ไฟล์.txt             # เพิ่มไฟล์เข้า staging area
+git add .                    # เพิ่มทุกไฟล์ที่เปลี่ยนแปลง
+git commit -m "ข้อความอธิบาย" # บันทึกการเปลี่ยนแปลง
+git push                     # ส่งขึ้น remote (เช่น GitHub)
+git pull                     # ดึงการเปลี่ยนแปลงล่าสุดจาก remote มา
+ดูประวัติและย้อนกลับ
+
+bash
+git log                      # ดูประวัติ commit ทั้งหมด
+git diff                     # ดูว่าไฟล์เปลี่ยนอะไรไปบ้าง
+git checkout -- ไฟล์.txt      # ยกเลิกการแก้ไขที่ยังไม่ commit
+
+การทำงานกับ Branch
+bash
+git branch                   # ดูรายชื่อ branch
+git branch feature-x         # สร้าง branch ใหม่
+git checkout feature-x       # สลับไปใช้ branch นั้น
+git checkout -b feature-x    # สร้างและสลับไปในคำสั่งเดียว
+git merge feature-x          # รวม branch feature-x เข้ากับ branch ปัจจุบัน
+
+ตัวอย่างการใช้งานจริงแบบครบวงจร
+bash
+# 1. เริ่มโปรเจกต์
+git init
+git add .
+git commit -m "Initial commit"
+
+# 2. เชื่อมกับ GitHub
+git remote add origin https://github.com/username/repo.git
+git push -u origin main
+
+# 3. ทำงานต่อ - แก้ไขไฟล์แล้ว...
+git add .
+git commit -m "แก้บั๊กหน้า login"
+git push
+เคล็ดลับสำหรับมือใหม่
+commit บ่อยๆ เขียนข้อความสั้นๆ ชัดเจนว่าเปลี่ยนอะไร (เช่น "fix: แก้ปัญหาปุ่มกดไม่ได้")
+ใช้ branch เสมอเมื่อจะทำฟีเจอร์ใหม่ อย่าทำงานตรงบน main โดยตรง
+สร้างไฟล์ .gitignore เพื่อบอก Git ว่าไฟล์ไหนไม่ต้องติดตาม (เช่น node_modules/, ไฟล์รหัสลับ)
+ถ้าพลาด commit ผิด ใช้ git revert แทน git reset เมื่อ push ไปแล้ว จะปลอดภัยกว่า
+
+มาลองทำโปรเจกต์ตัวอย่างง่ายๆ กัน จะได้เห็นภาพรวมทั้ง workflow ตั้งแต่สร้างไฟล์ → commit → แก้ไข → ดูประวัติ → สร้าง branch
+
+ผมจะให้ทำเว็บเพจง่ายๆ (HTML) เป็นตัวอย่าง เพราะเห็นผลลัพธ์ชัดเจนและไม่ซับซ้อน
+
+ขั้นตอนที่ 1: เช็คตำแหน่งและเข้าโฟลเดอร์โปรเจกต์
+bash
+pwd
+cd my-first-project
+pwd
+
+(ต้องเห็น path ลงท้ายด้วย my-first-project ก่อนไปต่อ — ป้องกันปัญหาแบบเมื่อกี้)
+
+ขั้นตอนที่ 2: สร้างไฟล์แรกและ commit
+bash
+echo "# My First Project" > README.md
+git add .
+git commit -m "Initial commit: add README"
+ขั้นตอนที่ 3: สร้างหน้าเว็บ แล้ว commit ครั้งที่ 2
+สร้างไฟล์ index.html:
+
+bash
+cat > index.html << 'EOF'
+<!DOCTYPE html>
+<html>
+<head><title>My First Page</title></head>
+<body>
+  <h1>สวัสดี Git!</h1>
+  <p>นี่คือโปรเจกต์แรกของฉัน</p>
+</body>
+</html>
+EOF
+
+git add .
+git commit -m "Add index.html"
+ขั้นตอนที่ 4: ดูประวัติ
+bash
+git log --oneline
+ควรเห็น commit 2 อัน
+ขั้นตอนที่ 5: ลองแก้ไขไฟล์ แล้วดู diff
+
+แก้ index.html เพิ่มบรรทัด เช่น <p>เรียนรู้ Git กันเถอะ</p> แล้วรัน:
+
+bash
+git status
+git diff
+
+จะเห็นว่า Git บอกว่าไฟล์ไหนเปลี่ยน และเปลี่ยนตรงไหนบ้าง (บรรทัดสีเขียว = เพิ่ม, แดง = ลบ)
+
+ลองทำตามนี้ดูก่อนได้เลยครับ ทำแล้วผลลัพธ์เป็นยังไงบอกได้เลย ถ้าอยากลองต่อเรื่อง branch (สร้างฟีเจอร์ใหม่แยกจากสายหลัก) ผมมีตัวอย่างต่อให้ด้วย
+
+สิ่งที่คุณเพิ่งทำสำเร็จ
+2d4c4a7 (HEAD -> main) Add index.html
+bcb0b5f first commit
+
+มี 2 commits แล้ว และ (HEAD -> main) บอกว่าตอนนี้คุณอยู่ที่ branch main ที่ commit ล่าสุด
+
+เรื่อง warning ที่เห็น (ไม่ต้องกังวล)
+warning: in the working copy of 'index.html', LF will be replaced by CRLF...
+
+นี่ไม่ใช่ error ครับ แค่ Git เตือนเรื่องรูปแบบการขึ้นบรรทัดใหม่ต่างกันระหว่าง Windows (CRLF) กับ Unix/Mac (LF) — เป็นเรื่องปกติมากบน Windows ไม่กระทบการทำงาน ถ้าอยากปิด warning นี้ถาวร รันคำสั่งนี้ได้:
+
+bash
+git config --global core.autocrlf true
+มาต่อกันด้วยเรื่อง Branch
+
+ลองสร้าง branch ใหม่เพื่อทดลองแก้ไขโดยไม่กระทบ main:
+bash
+git checkout -b add-css
+คำสั่งนี้สร้าง branch ชื่อ add-css และสลับเข้าไปในทันที (สังเกตว่า prompt จะเปลี่ยนจาก (main) เป็น (add-css))
+
+ลองสร้างไฟล์ CSS ใน branch นี้:
+
+bash
+cat > style.css << 'EOF'
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f0f0f0;
+  text-align: center;
+}
+h1 {
+  color: #2563eb;
+}
+EOF
+
+git add .
+git commit -m "Add stylesheet"
+เชื่อม CSS เข้ากับ HTML — แก้ไฟล์ index.html เพิ่มบรรทัดนี้ใน <head>:
+html
+<link rel="stylesheet" href="style.css">
+
+แล้ว commit อีกครั้ง:
+
+bash
+git add .
+git commit -m "Link stylesheet to index.html"
+
+ลองดูว่า branch ต่างกันยังไง:
+
+bash
+git log --oneline --all --graph
+
+จะเห็นเส้นแตกออกจาก main ไปเป็น add-css
+
+ลองทำดูก่อนแล้วบอกผลลัพธ์ได้เลยครับ จากนั้นเราจะลอง merge กลับเข้า main กัน
+
+เราถาม : ควรเห็น commit 2 อัน คืออันไหนบ้าง
+
+จากที่คุณรัน git log --oneline ได้ผลลัพธ์นี้:
+
+2d4c4a7 (HEAD -> main) Add index.html
+bcb0b5f first commit
+นี่คือ commit 2 อัน ที่ผมพูดถึงครับ:
+
+Commit hash	ข้อความ	เกิดจากอะไร
+bcb0b5f	first commit	ตอนที่คุณสร้าง README.md แล้ว git add . + git commit ครั้งแรก
+2d4c4a7	Add index.html	
+อ่านลำดับ: Git log จะเรียงจากบนลงล่าง = ล่าสุดไปเก่าสุด ดังนั้น:
+
+2d4c4a7 (บนสุด) = commit ล่าสุด และมี (HEAD -> main) ต่อท้าย หมายถึง "ตำแหน่งปัจจุบันที่คุณอยู่ตอนนี้ บน branch main"
+bcb0b5f (ล่างสุด) = commit แรกสุดที่สร้างไว้
+
+แต่ละ hash (เช่น 2d4c4a7) คือรหัสเฉพาะของ commit นั้นๆ ใช้อ้างอิงได้ เช่นถ้าอยากย้อนกลับไปดู หรือ revert เฉพาะ commit นั้น
+
+ตอนนี้คุณพร้อมลองสร้าง branch ต่อได้เลยครับ ตามที่แนะนำไว้ด้านบน (git checkout -b add-css)
+
+เราถาม : ลองแก้ไฟล์index.html แล้ว ได้ผลตามที่บอก
+
+ยอดเยี่ยมครับ! 🎉 ตอนนี้คุณเห็นแล้วว่า Git ติดตามการเปลี่ยนแปลงในไฟล์ได้แบบละเอียดถึงระดับบรรทัด นี่คือหัวใจสำคัญของ Git เลยครับ
+
+ทบทวน 3 สถานะของไฟล์ใน Git
+Working Directory  →  Staging Area  →  Repository
+   (แก้ไขแล้ว)          (git add)         (git commit)
+ตอนนี้ไฟล์ index.html ของคุณอยู่ในสถานะ "แก้ไขแล้วแต่ยังไม่ commit" — มาทำให้ครบขั้นตอนกัน:
+
+bash
+git add .
+git commit -m "Add greeting message"
+แล้วเช็คประวัติอีกครั้ง:
+
+bash
+git log --oneline
+ตอนนี้ควรมี 3 commits แล้ว
+
+ไปต่อกับเรื่อง Branch ตามที่ค้างไว้ไหมครับ?
+
+ไปต่อกับเรื่อง Branch ตามที่ค้างไว้ ได้เลย
+
+เยี่ยมเลยครับ! มาลอง Branch กัน — เป็นฟีเจอร์ที่ทรงพลังที่สุดอันหนึ่งของ Git
+
+แนวคิด: Branch คืออะไร
+
+คิดภาพเหมือนสายเวลาแยกออกจากกัน — คุณทำงานใน branch ใหม่ได้โดยไม่กระทบ main เลย พอพอใจผลลัพธ์แล้วค่อย "รวม" (merge) กลับเข้า main
+
+ขั้นตอนที่ 1: สร้าง branch ใหม่แล้วสลับเข้าไป
+bash
+git checkout -b add-css
+
+สังเกตว่า prompt จะเปลี่ยนจาก (main) เป็น (add-css) — นี่คือสัญญาณว่าคุณอยู่ใน branch ใหม่แล้ว
+
+เช็คดูรายชื่อ branch ทั้งหมด:
+bash
+git branch
+จะเห็น * add-css (มี * แปลว่ากำลังอยู่ที่ branch นี้) และ main
+
+ขั้นตอนที่ 2: สร้างไฟล์ CSS ใน branch นี้
+bash
+cat > style.css << 'EOF'
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f0f0f0;
+  text-align: center;
+  margin-top: 50px;
+}
+h1 {
+  color: #2563eb;
+}
+EOF
+
+git add .
+git commit -m "Add stylesheet"
+ขั้นตอนที่ 3: เชื่อม CSS เข้ากับ HTML
+เปิดไฟล์แก้ไข:
+ash
+notepad index.html
+
+เพิ่มบรรทัดนี้ไว้ใน <head> (ก่อน </head>):
+
+html
+<link rel="stylesheet" href="style.css">
+
+บันทึกแล้วปิด จากนั้น:
+
+bash
+git add .
+git commit -m "Link stylesheet to index.html"
+ขั้นตอนที่ 4: ดูภาพรวมทั้งสอง branch
+bash
+git log --oneline --all --graph
+
+จะเห็นเส้นแตกออกจาก main ไปเป็น add-css พร้อม commit ใหม่ 2 อันที่คุณเพิ่งทำ
+
+ลองทำตามนี้แล้วบอกผลลัพธ์ได้เลยครับ — ขั้นต่อไปเราจะลอง merge กลับเข้า main กัน
+
+
+เช็คให้ชัวร์ก่อน
+bash
+git status
+
+น่าจะเห็นว่า index.html อยู่ในสถานะ "Changes not staged for commit" หรือ "Changes to be committed" (ถ้า git add . ที่รันไปแล้วสำเร็จ)
+
+Commit ใหม่ให้ถูกต้อง
+
+พิมพ์คำสั่งนี้ทีละบรรทัด กด Enter รอให้เสร็จก่อน อย่าพิมพ์ต่อเนื่อง:
+
+bash
+git add .
+
+รอเสร็จ แล้วค่อยพิมพ์:
+
+bash
+git commit -m "Link stylesheet to index.html"
+
+จากนั้นเช็คอีกครั้ง:
+
+bash
+git log --oneline -3
+ควรเห็น commit ใหม่ชื่อ "Link stylesheet to index.html" ต่อจาก "Add stylesheet" ครับ ลองทำดูแล้วบอกผลได้เลย
+$
+
+Commit สำเร็จแล้วครับ! 🎉 (4fc71e6 Link stylesheet to index.html) ส่วนคำสั่งล่าสุดพิมพ์ผิดนิดเดียว เป็น --oneline ไม่ใช่ --online:
+
+bash
+git log --oneline -3
+ควรเห็นประมาณนี้:
+
+4fc71e6 (HEAD -> add-css) Link stylesheet to index.html
+e02157a Add stylesheet
+c194392 (main) Add greeting message
+ดูภาพรวมทั้งสอง branch
+ลองรันคำสั่งนี้เพื่อเห็นว่า add-css แยกออกจาก main ตรงไหน:
+
+bash
+git log --oneline --all --graph
+จะเห็นภาพประมาณนี้:
+* 4fc71e6 (HEAD -> add-css) Link stylesheet to index.html
+* e02157a Add stylesheet
+* c194392 (main) Add greeting message
+* 2d4c4a7 Add index.html
+* bcb0b5f first commit
+
+เห็นไหมครับว่า add-css มี commit เพิ่มอีก 2 อันที่ main ไม่มี — นี่คือสิ่งที่ branch ทำ: แยกสายออกไปทำงานโดยไม่กระทบ main
+
+ขั้นต่อไป: Merge กลับเข้า main
+
+พร้อมจะลอง merge branch add-css กลับเข้า main เลยไหมครับ? ขั้นตอนคือ:
+
+bash
+git checkout main
+git merge add-css
+
+ลองทำได้เลย แล้วบอกผลลัพธ์มาครับ
+
+เราถาม : ตัวไหนเป็น commit ของ add-css ที่ main ไม่มี
+Commit ของ add-css ที่ main ไม่มี คือ 2 อันบนสุดครับ:
+
+* 4fc71e6 (HEAD -> add-css) Link stylesheet to index.html   ← add-css เท่านั้น
+* e02157a Add stylesheet                                     ← add-css เท่านั้น
+* c194392 (main) Add greeting message                        ← จุดที่ branch แยกออกจากกัน
+* 2d4c4a7 Add index.html                                     ← ทั้งสอง branch มีร่วมกัน
+* bcb0b5f first commit                                        ← ทั้งสอง branch มีร่วมกัน
+วิธีดู
+สังเกตว่าแต่ละบรรทัดจะมีชื่อ branch อยู่ในวงเล็บกำกับไว้ (ถ้ามี):
+
+(HEAD -> add-css) แปะอยู่ที่ 4fc71e6 = ตำแหน่งปัจจุบันของ branch add-css
+(main) แปะอยู่ที่ c194392 = ตำแหน่งปัจจุบันของ branch main
+หลักการอ่าน: commit ไหนที่อยู่ "เหนือ" ตำแหน่งของ main (คือ c194392) นับจากด้านบนลงมา แต่ไม่มีคำว่า (main) กำกับ = commit ที่ main ยังไม่มี
+
+ดังนั้น:
+
+c194392 (Add greeting message) คือจุดที่ทั้งสอง branch แยกทางกัน (common ancestor)
+หลังจากจุดนั้น add-css เดินหน้าต่อไปอีก 2 commits (e02157a และ 4fc71e6) ที่ main ไม่รู้จักเลย
+พอจะเห็นภาพแล้วใช่ไหมครับ? พร้อมลอง merge เอา 2 commits นี้เข้า main ไหมครับ:
+
+bash
+git checkout main
+git merge add-css
+Merge สำเร็จแล้วครับ! มาดูกันว่าเกิดอะไรขึ้นบ้าง
+
+แปลผลลัพธ์ทีละบรรทัด
+Updating c194392..4fc71e6
+บอกว่า main กำลังอัปเดตจากตำแหน่ง c194392 (ตำแหน่งเดิมของ main) ไปยัง 4fc71e6 (ตำแหน่งล่าสุดของ add-css)
+
+Fast-forward
+นี่คือประเภทของ merge ที่ง่ายที่สุด — เกิดขึ้นเพราะ main ไม่มี commit ใหม่ของตัวเองเลยนับตั้งแต่ add-css แยกออกไป Git เลย "เลื่อน" ตัวชี้ของ main ไปตาม add-css ตรงๆ เหมือนเอาไม้บรรทัดขยับไปข้างหน้า ไม่ต้องสร้าง commit ใหม่หรือแก้ปัญหา conflict อะไรเลย
+
+index.html | 5 ++++-
+style.css  | 9 +++++++++
+2 files changed, 13 insertions(+), 1 deletion(-)
+create mode 100644 style.css
+สรุปว่าไฟล์ไหนเปลี่ยนบ้าง — index.html แก้ 5 บรรทัด (เพิ่ม 4 ลบ 1) และ style.css เป็นไฟล์ใหม่ที่เพิ่งถูกสร้าง (9 บรรทัด)
+
+เช็คผลลัพธ์
+ลองดู log อีกครั้ง:
+bash
+git log --oneline --all --graph
+
+คราวนี้ควรเห็นว่า (main) และ (HEAD -> main) มาอยู่ที่ตำแหน่งเดียวกับ add-css แล้ว (ที่ 4fc71e6) เพราะ main เดินตามทันแล้ว
+
+bash
+git branch
+
+จะยังเห็น branch add-css อยู่ (merge ไม่ได้ลบ branch ทิ้ง) ถ้าไม่ใช้แล้วลบทิ้งได้ด้วย:
+
+bash
+git branch -d add-css
+Fast-forward vs Merge แบบปกติ
+
+ที่คุณเจอครั้งนี้คือกรณีง่ายสุด (fast-forward) เพราะไม่มีการแก้ไขที่ main เลยระหว่างที่ทำงานใน add-css ในความเป็นจริง ถ้า main มีการเปลี่ยนแปลงของตัวเองด้วย (เช่น มีคนอื่น commit เข้า main) Git จะสร้าง merge commit ใหม่ขึ้นมาแทน และถ้าทั้งสองฝั่งแก้ไฟล์บรรทัดเดียวกัน จะเกิด conflict ที่ต้องแก้ไขเอง — เป็นเรื่องที่พบบ่อยกว่าตอนทำงานจริงกับทีม
+
+อยากลองจำลองสถานการณ์ merge conflict ดูไหมครับ? จะได้เห็นวิธีแก้ไขตอนที่ Git แก้ให้อัตโนมัติไม่ได้
+
+เราถาม :WP169455@8CC2392C6C MINGW64 ~/My-First-Project (main)
+$ git checkout main
+M       index.html
+Already on 'main'
+WP169455@8CC2392C6C MINGW64 ~/My-First-Project (main)
+$ git merge add-css
+Already up to date.
+WP169455@8CC2392C6C MINGW64 ~/My-First-Project (main)
+$
+
+เข้าใจครับ มาดูทีละบรรทัด
+แปลผลลัพธ์
+M       index.html
+Already on 'main'
+
+M หมายถึง index.html มีการแก้ไขที่ ยังไม่ได้ commit ค้างอยู่ในเครื่องคุณ (working directory) และ Git แจ้งว่าคุณอยู่ที่ main อยู่แล้ว ไม่ต้องสลับอะไร (เพราะจากขั้นที่แล้วตอน merge fast-forward มันเลื่อน main มาที่เดียวกับ add-css แล้ว)
+
+Already up to date.
+
+Merge ไม่มีอะไรให้ทำเพิ่ม เพราะ main มี commit ล่าสุดของ add-css อยู่แล้วตั้งแต่รอบที่แล้ว (สำเร็จไปแล้วจากคำสั่งก่อนหน้านี้) — เป็นเรื่องปกติ ไม่ใช่ error
+
+แต่มีจุดที่น่าสนใจ: ทำไมมี M index.html
+
+แปลว่าตอนนี้มีคนแก้ไข index.html เพิ่มเติมแล้วยังไม่ได้ commit ลองเช็คดูว่าคืออะไร:
+
+bash
+git status
+bash
+git diff
+
+ถ้าเป็นการแก้ไขที่คุณตั้งใจทำ (เช่น เผลอแก้ไฟล์ค้างไว้ตอนทดสอบ) ก็ commit ให้เรียบร้อย:
+
+bash
+git add .
+git commit -m "ข้อความอธิบายการแก้ไข"
+
+หรือถ้าไม่ได้ตั้งใจแก้ อยากทิ้งการเปลี่ยนแปลงนั้นไปเลย ใช้:
+
+bash
+git checkout -- index.html
+
+ลอง git status ดูก่อนว่าเจออะไรครับ แล้วค่อยตัดสินใจว่าจะเก็บหรือทิ้งการแก้ไขนั้น
+
+
+WP169455@8CC2392C6C MINGW64 ~/My-First-Project (main)
+$ git commit -m "โปรเจคแรกของฉัน-myproject"
+On branch main
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+        modified:   index.html
+no changes added to commit (use "git add" and/or "git commit -a")
+
+no changes added to commit แปลว่าคุณลืม git add ก่อน commit ครับ — Git จะ commit เฉพาะไฟล์ที่อยู่ใน staging area เท่านั้น (ไฟล์ที่ผ่าน git add แล้ว) ตอนนี้ index.html ยังอยู่แค่ใน working directory ยังไม่ถูก "เตรียม" ไว้
+
+แก้ไขให้ครบขั้นตอน
+bash
+git add .
+แล้วค่อย:
+
+bash
+git commit -m "โปรเจคแรกของฉัน-myproject"
+git commit -m "โปรเจคแรกของฉัน-myproject"
+
+จากนั้นเช็คว่า commit สำเร็จ:
+
+bash
+git status
+
+ควรเห็น nothing to commit, working tree clean
+
+ทบทวนขั้นตอนที่ถูกต้องเสมอ
+แก้ไฟล์  →  git add .  →  git commit -m "..."
+(working)    (staging)      (repository)
+
+ข้ามขั้นตอน git add ไม่ได้เลยครับ ไม่ว่าจะแก้ไฟล์กี่ครั้งก็ตาม — เป็นจุดที่มือใหม่พลาดบ่อยที่สุด ลองรัน 2 คำสั่งด้านบนแล้วบอกผลลัพธ์ได้เลยครับ
+WP169455@8CC2392C6C MINGW64 ~/My-First-Project (main)
+$ git add .
+WP169455@8CC2392C6C MINGW64 ~/My-First-Project (main)
+$ git commit -m "โปรเจคแรกของฉัน-Myproject"
+[main 66cf961] โปรเจคแรกของฉัน-Myproject
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+WP169455@8CC2392C6C MINGW64 ~/My-First-Project (main)
+$ git status
+On branch main
+nothing to commit, working tree clean
+
+สำเร็จเรียบร้อยครับ! 🎉 working tree clean แปลว่าทุกอย่างถูก commit หมดแล้ว ไม่มีอะไรค้าง
+
+สรุปสิ่งที่คุณทำได้แล้วทั้งหมด
+ตอนนี้คุณผ่าน workflow หลักของ Git ครบวงจรแล้วครับ:
+ตั้งค่า Git ครั้งแรก
+1 ตั้งค่า user.name, user.email และสร้าง repo แรกด้วย git init
+Commit ไฟล์และดูการเปลี่ยนแปลง
+2 เรียนรู้วงจร git add → git commit และดูสถานะไฟล์ด้วย git status และ git diff
+ทำงานกับ Branch
+3 สร้าง branch add-css เพื่อทำงานแยกจาก main โดยไม่กระทบกัน
+Merge Branch สำเร็จ
+4 รวม branch add-css กลับเข้า main ด้วย git merge แบบ fast-forward
+แก้ปัญหาเองได้
+5 แก้เรื่อง permission denied จาก git init ผิดที่ และเรียนรู้วิธีตรวจสอบตำแหน่งด้วย pwd
+เก่งมากครับ! จากตั้งค่า Git ครั้งแรกมาจนถึง merge branch สำเร็จภายในวันเดียว — นี่คือ workflow หลักที่โปรแกรมเมอร์ใช้จริงในการทำงานทุกวันเลยครับ
+
+อยากต่อยอดเรื่องไหนต่อไหมครับ?
+Push ขึ้น GitHub — เอาโปรเจกต์นี้ขึ้นออนไลน์ เก็บสำรอง และแชร์ให้คนอื่นดูได้
+Merge Conflict — จำลองสถานการณ์ที่ Git แก้ให้อัตโนมัติไม่ได้ ต้องแก้เอง (เจอบ่อยมากตอนทำงานทีม)
+.gitignore — บอก Git ไม่ให้ติดตามไฟล์บางอย่าง เช่น ไฟล์ config ลับ หรือโฟลเดอร์ที่ auto-generate
+Undo การเปลี่ยนแปลง — วิธีย้อนกลับ commit ที่ผิดพลาด (git revert, git reset)
+
+หรือถ้าพอแค่นี้ก่อน ก็เก็บสรุปด้านบนไว้ทบทวนได้เลยครับ 😊
+
+
+
+
+
